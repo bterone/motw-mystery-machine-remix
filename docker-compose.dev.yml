@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15.0
+    container_name: motw_mystery_machine_remix_db
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=motw_mystery_machine_remix_dev
+    ports:
+      - "5432:5432"
