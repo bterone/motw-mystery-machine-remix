@@ -20,6 +20,8 @@ export default function handleRequest(
   return new Promise((resolve, reject) => {
     let didError = false;
 
+    console.log("fufufufuu");
+
     const { pipe, abort } = renderToPipeableStream(
       <RemixServer context={remixContext} url={request.url} />,
       {
