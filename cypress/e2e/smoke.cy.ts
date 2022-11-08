@@ -39,7 +39,7 @@ describe("smoke tests", () => {
         midnight: faker.lorem.sentences(1),
       },
       tenSecrets: faker.helpers.uniqueArray(faker.lorem.sentences, 10),
-    }
+    };
 
     cy.login();
 
@@ -54,10 +54,18 @@ describe("smoke tests", () => {
     cy.findByRole("textbox", { name: /concept/i }).type(testMystery.concept);
     cy.findByRole("textbox", { name: /hook/i }).type(testMystery.hook);
     cy.findByRole("textbox", { name: /day/i }).type(testMystery.countdown.day);
-    cy.findByRole("textbox", { name: /shadows/i }).type(testMystery.countdown.shadows);
-    cy.findByRole("textbox", { name: /dusk/i }).type(testMystery.countdown.dusk);
-    cy.findByRole("textbox", { name: /nightfall/i }).type(testMystery.countdown.nightfall);
-    cy.findByRole("textbox", { name: /midnight/i }).type(testMystery.countdown.midnight);
+    cy.findByRole("textbox", { name: /shadows/i }).type(
+      testMystery.countdown.shadows
+    );
+    cy.findByRole("textbox", { name: /dusk/i }).type(
+      testMystery.countdown.dusk
+    );
+    cy.findByRole("textbox", { name: /nightfall/i }).type(
+      testMystery.countdown.nightfall
+    );
+    cy.findByRole("textbox", { name: /midnight/i }).type(
+      testMystery.countdown.midnight
+    );
     cy.findByRole("button", { name: /save/i }).click();
 
     cy.findByRole("button", { name: /delete/i }).click();
