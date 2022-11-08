@@ -39,8 +39,17 @@ model Note {
 }
 
 model Mystery {
-  id    String @id @default(cuid())
-  title String
+  id        String @id @default(cuid())
+  title     String
+  hook      String?
+  concept   String?
+  day       String?
+  shadows   String?
+  dusk      String?
+  nightfall String?
+  midnight  String?
+  notes     String?
+  secrets   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
