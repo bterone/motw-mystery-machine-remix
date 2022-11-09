@@ -1,7 +1,56 @@
-import { Form } from "@remix-run/react";
-import { useRef } from "react";
+import type { ActionArgs } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { Form, useActionData } from "@remix-run/react";
+import { useEffect, useRef } from "react";
+import { ZodError } from "zod";
+
+import { createMystery } from "~/models/mystery.server";
+import { mysteryParams } from "~/forms/mystery";
+import { requireUserId } from "~/session.server";
+
+export async function action({ request }: ActionArgs) {
+  const userId = await requireUserId(request);
+
+  const formData = await request.formData();
+  const title = formData.get("title");
+  const concept = formData.get("concept");
+  const hook = formData.get("hook");
+  const day = formData.get("day");
+  const shadows = formData.get("shadows");
+  const dusk = formData.get("dusk");
+  const nightfall = formData.get("nightfall");
+  const midnight = formData.get("title");
+
+  const parsedParams = mysteryParams.safeParse({
+    title,
+    concept,
+    hook,
+    day,
+    shadows,
+    dusk,
+    nightfall,
+    midnight,
+    userId,
+  });
+
+  if (parsedParams.success) {
+    const mystery = await createMystery(parsedParams.data);
+
+    return redirect(`/mystery/${mystery.id}`);
+  } else if (parsedParams.error instanceof ZodError) {
+    const formattedErrors = parsedParams.error.format();
+
+    return json(formattedErrors, { status: 400 });
+  } else {
+    return json(
+      { title: { _errors: "Something went wrong, please try again later!" } },
+      { status: 400 }
+    );
+  }
+}
 
 export default function MysteryNewPage() {
+  const actionData = useActionData<typeof action>();
   const titleRef = useRef<HTMLInputElement>(null);
   const conceptRef = useRef<HTMLTextAreaElement>(null);
   const hookRef = useRef<HTMLTextAreaElement>(null);
@@ -10,6 +59,14 @@ export default function MysteryNewPage() {
   const duskRef = useRef<HTMLInputElement>(null);
   const nightfallRef = useRef<HTMLInputElement>(null);
   const midnightRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    console.log(actionData);
+
+    if (actionData?.title?._errors) {
+      titleRef.current?.focus();
+    }
+  }, [actionData]);
 
   return (
     <Form method="post">
@@ -20,8 +77,17 @@ export default function MysteryNewPage() {
             ref={titleRef}
             name="title"
             className="flex-1 rounded-md border-2 px-3 text-lg leading-loose"
+            aria-invalid={actionData?.title?._errors ? true : undefined}
+            aria-errormessage={
+              actionData?.title?._errors ? "title-error" : undefined
+            }
           />
         </label>
+        {actionData?.title?._errors && (
+          <div className="pt-1 text-red-700" id="title-error">
+            {actionData.title._errors}
+          </div>
+        )}
       </div>
 
       <div className="mb-6">
@@ -99,6 +165,15 @@ export default function MysteryNewPage() {
             className="flex-1 rounded-md border-2 px-3 text-lg leading-loose"
           />
         </label>
+      </div>
+
+      <div className="text-right">
+        <button
+          type="submit"
+          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+        >
+          Save
+        </button>
       </div>
     </Form>
   );

@@ -39,7 +39,7 @@ model Note {
 }
 
 model Mystery {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   title     String
   hook      String?
   concept   String?
