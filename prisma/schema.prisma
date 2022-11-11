@@ -16,6 +16,7 @@ model User {
 
   password Password?
   notes    Note[]
+  Mystery  Mystery[]
 }
 
 model Password {
@@ -29,6 +30,26 @@ model Note {
   id    String @id @default(cuid())
   title String
   body  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+}
+
+model Mystery {
+  id        String  @id @default(cuid())
+  title     String
+  hook      String?
+  concept   String?
+  day       String?
+  shadows   String?
+  dusk      String?
+  nightfall String?
+  midnight  String?
+  notes     String?
+  secrets   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
